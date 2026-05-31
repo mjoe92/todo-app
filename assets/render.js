@@ -3,7 +3,6 @@
  */
 let currentFilter = 'all';
 
-/* Utilities */
 function escapeHtml(s) {
     return s
         .replace(/&/g, '&amp;')
@@ -13,67 +12,62 @@ function escapeHtml(s) {
 }
 
 function formatDate(ts) {
-    return new Date(ts).toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+    return new Date(ts).toLocaleDateString(currentLang || 'en', {month: 'short', day: 'numeric'});
 }
 
-/* Filter tabs */
 function setFilter(filter, btn) {
     currentFilter = filter;
-    document.querySelectorAll('.filter-tab').forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-selected', 'false');
     });
     btn.classList.add('active');
     btn.setAttribute('aria-selected', 'true');
     renderTasks();
 }
 
-/* Reset note */
 function renderResetNote() {
     const note = document.getElementById('reset-note');
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
     const diffH = Math.ceil((tomorrow - Date.now()) / 36e5);
-    note.textContent = `Checkboxes reset daily. Next reset in ~${diffH}h.`;
+    note.textContent = t('resetNote', diffH);
 }
 
-/* Empty state */
-const EMPTY_LABELS = {
-    all: 'No active tasks',
-    active: 'No active tasks',
-    done: 'No completed tasks',
-    ignored: 'No ignored tasks',
-};
-const EMPTY_DESCRIPTIONS = {
-    all: 'Tap "New task" to get started.',
-    active: 'Everything is done!',
-    done: 'Mark tasks as done by tapping the circle.',
-    ignored: 'Swipe right on a task to ignore it.',
-};
-
 function renderEmptyState(list) {
+    const labelKey = {
+        all: 'emptyAllLabel',
+        active: 'emptyActiveLabel',
+        done: 'emptyDoneLabel',
+        ignored: 'emptyIgnoredLabel'
+    }[currentFilter];
+    const descKey = {
+        all: 'emptyAllDesc',
+        active: 'emptyActiveDesc',
+        done: 'emptyDoneDesc',
+        ignored: 'emptyIgnoredDesc'
+    }[currentFilter];
     list.innerHTML = `
     <div class="empty-state">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
         <rect x="3" y="3" width="18" height="18" rx="4"/>
         <path d="M8 12h8M8 16h5" stroke-linecap="round"/>
       </svg>
-      <h3>${EMPTY_LABELS[currentFilter]}</h3>
-      <p>${EMPTY_DESCRIPTIONS[currentFilter]}</p>
+      <h3>${t(labelKey)}</h3>
+      <p>${t(descKey)}</p>
     </div>`;
 }
 
-/* Task card HTML */
 function buildTaskCardHTML(task) {
     const badge = task.status === 'done'
-        ? `<span class="task-badge badge-done">Done</span>`
+        ? `<span class="task-badge badge-done">${t('badgeDone')}</span>`
         : task.status === 'ignored'
-            ? `<span class="task-badge badge-ignored">Ignored</span>`
+            ? `<span class="task-badge badge-ignored">${t('badgeIgnored')}</span>`
             : '';
 
-    const ignoreLabel = task.status === 'ignored' ? 'Unignore task' : 'Ignore task';
-    const ignoreTitle = task.status === 'ignored' ? 'Unignore' : 'Ignore';
+    const ignoreLabel = task.status === 'ignored' ? t('unignoreTask') : t('ignoreTask');
+    const ignoreTitle = task.status === 'ignored' ? t('unignore') : t('ignore');
 
     return `
     <div class="task-card-bg task-card-bg-delete" id="bg-delete-${task.id}">
@@ -90,7 +84,7 @@ function buildTaskCardHTML(task) {
     <div class="task-card-inner" id="inner-${task.id}">
       <div class="task-checkbox ${task.checked ? 'checked' : ''}"
            role="checkbox" aria-checked="${task.checked}"
-           aria-label="Mark task as done" tabindex="0"
+           aria-label="${t('markDone')}" tabindex="0"
            data-action="toggle" data-id="${task.id}">
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="2,6 5,9 10,3"/>
@@ -98,7 +92,7 @@ function buildTaskCardHTML(task) {
       </div>
       <div class="task-content" data-action="edit" data-id="${task.id}">
         <div class="task-title">${escapeHtml(task.title)}</div>
-        <div class="task-meta">Added ${formatDate(task.createdAt)}</div>
+        <div class="task-meta">${t('addedOn')} ${formatDate(task.createdAt)}</div>
       </div>
       ${badge}
       <div class="task-actions">
@@ -110,7 +104,7 @@ function buildTaskCardHTML(task) {
           </svg>
         </button>
         <button class="task-action-btn delete"
-                aria-label="Delete task" title="Delete"
+                aria-label="${t('deleteTask')}" title="${t('delete')}"
                 data-action="delete" data-id="${task.id}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <polyline points="3 6 5 6 21 6"/>
@@ -121,7 +115,6 @@ function buildTaskCardHTML(task) {
     </div>`;
 }
 
-/* Main render */
 function renderTasks() {
     const list = document.getElementById('task-list');
     const filtered = getFilteredTasks(currentFilter);
@@ -139,11 +132,7 @@ function renderTasks() {
 
     filtered.forEach(task => {
         const card = document.createElement('div');
-        card.className = [
-            'task-card',
-            task.status === 'done' ? 'done' : '',
-            task.status === 'ignored' ? 'ignored' : '',
-        ].join(' ').trim();
+        card.className = ['task-card', task.status === 'done' ? 'done' : '', task.status === 'ignored' ? 'ignored' : ''].join(' ').trim();
         card.setAttribute('data-task-id', task.id);
         card.setAttribute('role', 'listitem');
         card.innerHTML = buildTaskCardHTML(task);

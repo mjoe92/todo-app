@@ -1,6 +1,4 @@
-/**
- * Core task state management: create, update, delete, filter.
- */
+/** Core task state management: create, update, delete, filter */
 let tasks = [];
 
 /* CRUD */

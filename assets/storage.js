@@ -52,7 +52,8 @@ function applyDailyReset(tasks) {
             localStorage.setItem(STORAGE_KEYS.LAST_RESET, today);
             saveTasks(tasks);
         }
-    } catch (error) {}
+    } catch (error) {
+    }
 
     return tasks;
 }

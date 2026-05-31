@@ -10,14 +10,14 @@ function openModal(id = null) {
     const submit = document.getElementById('modal-submit');
 
     if (id !== null) {
-        const task = tasks.find(t => t.id === id);
+        const task = tasks.find(tk => tk.id === id);
         input.value = task ? task.title : '';
-        title.textContent = 'Edit Task';
-        submit.textContent = 'Save';
+        title.textContent = t('modalTitleEdit');
+        submit.textContent = t('modalSave');
     } else {
         input.value = '';
-        title.textContent = 'New Task';
-        submit.textContent = 'Add task';
+        title.textContent = t('modalTitleNew');
+        submit.textContent = t('modalAdd');
     }
 
     document.getElementById('modal').classList.add('open');

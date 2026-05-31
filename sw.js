@@ -6,21 +6,23 @@
  *   The browser will detect the changed sw.js, install the new cache
  *   in the background, and activate it on the next page load.
  */
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME    = `todo-app-${CACHE_VERSION}`;
 
 // All local assets to pre-cache on installation
 const PRECACHE_URLS = [
-  './',
-  './index.html',
-  './assets/style.css',
-  './assets/storage.js',
-  './assets/theme.js',
-  './assets/tasks.js',
-  './assets/swipe.js',
-  './assets/render.js',
-  './assets/modal.js',
-  './assets/app.js',
+    './',
+    './index.html',
+    './assets/style.css',
+    './assets/i18n.js',
+    './assets/storage.js',
+    './assets/theme.js',
+    './assets/tasks.js',
+    './assets/swipe.js',
+    './assets/render.js',
+    './assets/modal.js',
+    './assets/app.js',
+    './assets/sw-register.js',
 ];
 
 // Install: pre-cache all local assets
@@ -35,13 +37,13 @@ self.addEventListener('install', event => {
 // Activate: delete old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
+    caches.keys().then(keys =>
+      Promise.all(
         keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key  => caches.delete(key))
-      ))
-      .then(() => self.clients.claim()) // take control of open tabs immediately
+          .filter(k => k.startsWith('todo-app-') && k !== CACHE_NAME)
+          .map(k => caches.delete(k))
+      )
+    ).then(() => self.clients.claim())
   );
 });
 

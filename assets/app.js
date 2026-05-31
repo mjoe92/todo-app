@@ -54,7 +54,8 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
 });
 
-/* Boot */
+/* Init */
 initTheme();
 initTasks();
+initI18n();
 renderTasks();

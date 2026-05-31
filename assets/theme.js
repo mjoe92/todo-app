@@ -1,6 +1,4 @@
-/**
- * Manages light / dark theme toggling and persistence.
- */
+/** Manages light / dark theme toggling and persistence */
 let currentTheme = 'light';
 
 function initTheme() {
