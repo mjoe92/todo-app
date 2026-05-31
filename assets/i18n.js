@@ -9,8 +9,9 @@ const TRANSLATIONS = {
     swipeHint: '← Swipe left to delete · Swipe right to ignore →',
     modalTitleNew: 'New Task', modalTitleEdit: 'Edit Task',
     modalLabel: 'Task title', modalPlaceholder: 'What needs to be done?',
+    modalDetailLabel: 'Details (optional)', modalDetailPlaceholder: 'Add more context…',
     modalCancel: 'Cancel', modalAdd: 'Add task', modalSave: 'Save',
-    badgeDone: 'Done', badgeIgnored: 'Ignored',
+    badgeDone: 'Done', badgeIgnored: 'Ignored', badgeActive: 'Active',
     ignoreTask: 'Ignore task', unignoreTask: 'Unignore task', ignore: 'Ignore', unignore: 'Unignore',
     deleteTask: 'Delete task', delete: 'Delete', markDone: 'Mark task as done', addedOn: 'Added',
     emptyAllLabel: 'No tasks yet', emptyActiveLabel: 'No active tasks',
@@ -22,6 +23,7 @@ const TRANSLATIONS = {
     dayToday: 'Today', dayAll: 'All',
     dayMon: 'Mo', dayTue: 'Tu', dayWed: 'We', dayThu: 'Th', dayFri: 'Fr', daySat: 'Sa', daySun: 'Su',
     modalDays: 'Visible on days', taskDays: 'Scheduled days',
+    copyright: '© 2026 mJoe. All rights reserved.',
   },
   hu: {
     appTitle: 'Feladataim', newTask: 'Új feladat',
@@ -29,8 +31,9 @@ const TRANSLATIONS = {
     swipeHint: '← Balra húzva törlés · Jobbra húzva kihagyás →',
     modalTitleNew: 'Új feladat', modalTitleEdit: 'Feladat szerkesztése',
     modalLabel: 'Feladat neve', modalPlaceholder: 'Mit kell elvégezni?',
+    modalDetailLabel: 'Részletek (opcionális)', modalDetailPlaceholder: 'Adj meg további információt…',
     modalCancel: 'Mégsem', modalAdd: 'Hozzáadás', modalSave: 'Mentés',
-    badgeDone: 'Kész', badgeIgnored: 'Kihagyott',
+    badgeDone: 'Kész', badgeIgnored: 'Kihagyott', badgeActive: 'Aktív',
     ignoreTask: 'Feladat kihagyása', unignoreTask: 'Kihagyás visszavonása', ignore: 'Kihagyás', unignore: 'Visszavonás',
     deleteTask: 'Feladat törlése', delete: 'Törlés', markDone: 'Feladat megjelölése készként', addedOn: 'Hozzáadva',
     emptyAllLabel: 'Még nincsenek feladatok', emptyActiveLabel: 'Nincs aktív feladat',
@@ -42,6 +45,7 @@ const TRANSLATIONS = {
     dayToday: 'Ma', dayAll: 'Összes',
     dayMon: 'H', dayTue: 'K', dayWed: 'Sze', dayThu: 'Cs', dayFri: 'P', daySat: 'Szo', daySun: 'V',
     modalDays: 'Látható napokon', taskDays: 'Ütemezett napok',
+    copyright: '© 2026 mJoe. Minden jog fenntartva.',
   },
   de: {
     appTitle: 'Meine Aufgaben',
@@ -55,11 +59,14 @@ const TRANSLATIONS = {
     modalTitleEdit: 'Aufgabe bearbeiten',
     modalLabel: 'Aufgabentitel',
     modalPlaceholder: 'Was muss erledigt werden?',
+    modalDetailLabel: 'Details (optional)',
+    modalDetailPlaceholder: 'Weitere Informationen hinzufügen…',
     modalCancel: 'Abbrechen',
     modalAdd: 'Hinzufügen',
     modalSave: 'Speichern',
     badgeDone: 'Erledigt',
     badgeIgnored: 'Ignoriert',
+    badgeActive: 'Aktiv',
     ignoreTask: 'Aufgabe ignorieren',
     unignoreTask: 'Ignorieren rückgängig machen',
     ignore: 'Ignorieren',
@@ -88,6 +95,7 @@ const TRANSLATIONS = {
     daySun: 'So',
     modalDays: 'Sichtbar an Tagen',
     taskDays: 'Geplante Tage',
+    copyright: '© 2026 mJoe. Alle Rechte vorbehalten.',
   },
   ru: {
     appTitle: 'Мои задачи',
@@ -101,11 +109,14 @@ const TRANSLATIONS = {
     modalTitleEdit: 'Редактировать задачу',
     modalLabel: 'Название задачи',
     modalPlaceholder: 'Что нужно сделать?',
+    modalDetailLabel: 'Детали (необязательно)',
+    modalDetailPlaceholder: 'Добавить подробности…',
     modalCancel: 'Отмена',
     modalAdd: 'Добавить',
     modalSave: 'Сохранить',
     badgeDone: 'Готово',
     badgeIgnored: 'Игнорируется',
+    badgeActive: 'Активно',
     ignoreTask: 'Игнорировать задачу',
     unignoreTask: 'Отменить игнорирование',
     ignore: 'Игнорировать',
@@ -134,6 +145,7 @@ const TRANSLATIONS = {
     daySun: 'Вс',
     modalDays: 'Показывать в дни',
     taskDays: 'Запланированные дни',
+    copyright: '© 2026 mJoe. Все права защищены.',
   },
   fr: {
     appTitle: 'Mes tâches',
@@ -147,11 +159,14 @@ const TRANSLATIONS = {
     modalTitleEdit: 'Modifier la tâche',
     modalLabel: 'Titre de la tâche',
     modalPlaceholder: 'Que faut-il faire ?',
+    modalDetailLabel: 'Détails (optionnel)',
+    modalDetailPlaceholder: 'Ajouter des informations…',
     modalCancel: 'Annuler',
     modalAdd: 'Ajouter',
     modalSave: 'Enregistrer',
     badgeDone: 'Terminé',
     badgeIgnored: 'Ignoré',
+    badgeActive: 'Actif',
     ignoreTask: 'Ignorer la tâche',
     unignoreTask: 'Ne plus ignorer',
     ignore: 'Ignorer',
@@ -180,6 +195,7 @@ const TRANSLATIONS = {
     daySun: 'Di',
     modalDays: 'Visible les jours',
     taskDays: 'Jours planifiés',
+    copyright: '© 2026 mJoe. Tous droits réservés.',
   },
   es: {
     appTitle: 'Mis tareas', newTask: 'Nueva tarea',
@@ -187,8 +203,9 @@ const TRANSLATIONS = {
     swipeHint: '← Deslizar izquierda para eliminar · derecha para ignorar →',
     modalTitleNew: 'Nueva tarea', modalTitleEdit: 'Editar tarea',
     modalLabel: 'Título de la tarea', modalPlaceholder: '¿Qué hay que hacer?',
+    modalDetailLabel: 'Detalles (opcional)', modalDetailPlaceholder: 'Añadir más contexto…',
     modalCancel: 'Cancelar', modalAdd: 'Añadir', modalSave: 'Guardar',
-    badgeDone: 'Hecha', badgeIgnored: 'Ignorada',
+    badgeDone: 'Hecha', badgeIgnored: 'Ignorada', badgeActive: 'Activa',
     ignoreTask: 'Ignorar tarea', unignoreTask: 'Dejar de ignorar', ignore: 'Ignorar', unignore: 'Restaurar',
     deleteTask: 'Eliminar tarea', delete: 'Eliminar', markDone: 'Marcar tarea como hecha', addedOn: 'Añadido',
     emptyAllLabel: 'Aún no hay tareas', emptyActiveLabel: 'No hay tareas activas',
@@ -200,6 +217,7 @@ const TRANSLATIONS = {
     dayToday: 'Hoy', dayAll: 'Todos',
     dayMon: 'Lu', dayTue: 'Ma', dayWed: 'Mi', dayThu: 'Ju', dayFri: 'Vi', daySat: 'Sá', daySun: 'Do',
     modalDays: 'Visible los días', taskDays: 'Días programados',
+    copyright: '© 2026 mJoe. Todos los derechos reservados.',
   },
 };
 
@@ -261,38 +279,36 @@ function setLang(lang) {
 
 function applyTranslations() {
   const title = document.querySelector('.app-title-text');
-  if (title) {
-    title.textContent = t('appTitle');
-  }
+  if (title) title.textContent = t('appTitle');
 
   const btnText = document.querySelector('.btn-add-text');
-  if (btnText) {
-    btnText.textContent = t('newTask');
-  }
+  if (btnText) btnText.textContent = t('newTask');
 
   const filterKeys = ['filterActive', 'filterDone', 'filterIgnored', 'filterAll'];
   document.querySelectorAll('.filter-tab').forEach((tab, i) => {
     tab.textContent = t(filterKeys[i]);
   });
+
   const hint = document.getElementById('swipe-hint');
-  if (hint) {
-    hint.textContent = t('swipeHint');
-  }
+  if (hint) hint.textContent = t('swipeHint');
 
   const formLabel = document.querySelector('.form-label');
-  if (formLabel) {
-    formLabel.textContent = t('modalLabel');
-  }
+  if (formLabel) formLabel.textContent = t('modalLabel');
 
   const input = document.getElementById('task-input');
-  if (input) {
-    input.placeholder = t('modalPlaceholder');
-  }
+  if (input) input.placeholder = t('modalPlaceholder');
+
+  const detailLabel = document.getElementById('detail-label');
+  if (detailLabel) detailLabel.textContent = t('modalDetailLabel');
+
+  const detailInput = document.getElementById('task-detail-input');
+  if (detailInput) detailInput.placeholder = t('modalDetailPlaceholder');
 
   const cancelBtn = document.querySelector('.btn-secondary');
-  if (cancelBtn) {
-    cancelBtn.textContent = t('modalCancel');
-  }
+  if (cancelBtn) cancelBtn.textContent = t('modalCancel');
+
+  const copyright = document.getElementById('footer-copyright');
+  if (copyright) copyright.textContent = t('copyright');
 
   renderLangSwitcher();
   renderDayFilterBar();

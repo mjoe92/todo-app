@@ -61,9 +61,15 @@
 
   <div id="task-list" role="list" aria-label="Task list"></div>
 
-  <p class="reset-note" id="reset-note"></p>
   <p class="swipe-hint" id="swipe-hint" style="display:none">&#8592; Swipe left to delete &nbsp;&middot;&nbsp; Swipe right to ignore &#8594;</p>
 </main>
+
+<!-- Fixed bottom bar: copyright + reset note -->
+<div class="bottom-bar" id="bottom-bar">
+  <span class="bottom-bar-copy" id="footer-copyright">&copy; 2026 mJoe. All rights reserved.</span>
+  <span class="bottom-bar-sep">&middot;</span>
+  <span class="bottom-bar-reset" id="reset-note"></span>
+</div>
 
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-card">
@@ -77,7 +83,11 @@
       </button>
     </div>
     <label class="form-label" for="task-input">Task title</label>
-    <textarea class="form-input" id="task-input" rows="3" placeholder="What needs to be done?" maxlength="300"></textarea>
+    <textarea class="form-input" id="task-input" rows="2" placeholder="What needs to be done?" maxlength="300"></textarea>
+    <div style="margin-top: 0.75rem;">
+      <label class="form-label" id="detail-label" for="task-detail-input">Details (optional)</label>
+      <textarea class="form-input" id="task-detail-input" rows="3" placeholder="Add more context…" maxlength="1000"></textarea>
+    </div>
     <div class="day-picker-row">
       <label class="form-label" id="day-picker-label">Visible on days</label>
       <div id="day-picker" class="day-picker"></div>
@@ -97,8 +107,19 @@
 <script src="./assets/render.js"></script>
 <script src="./assets/modal.js"></script>
 <script src="./assets/app.js"></script>
-
 <script src="./assets/sw-register.js"></script>
+
+<script>
+  // Sync body class with active filter for badge visibility CSS
+  const _origSetFilter = setFilter;
+  setFilter = function(filter, btn) {
+    document.body.className = document.body.className
+      .replace(/\bfilter-\w+\b/g, '').trim();
+    document.body.classList.add('filter-' + filter);
+    _origSetFilter(filter, btn);
+  };
+  document.body.classList.add('filter-active');
+</script>
 
 </body>
 </html>

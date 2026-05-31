@@ -11,6 +11,7 @@
     --color-text-faint: #bab9b4;
     --color-primary: #01696f;
     --color-primary-hover: #0c4e54;
+    --color-primary-highlight: #cedcd8;
     --color-error: #a12c7b;
     --color-warning: #964219;
     --color-success: #437a22;
@@ -21,6 +22,7 @@
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
     --font-body: 'DM Sans', system-ui, sans-serif;
+    --bottom-bar-h: 2.25rem;
 }
 
 [data-theme="dark"] {
@@ -35,6 +37,7 @@
     --color-text-faint: #4a4947;
     --color-primary: #4f98a3;
     --color-primary-hover: #227f8b;
+    --color-primary-highlight: #313b3b;
     --color-error: #d163a7;
     --color-warning: #bb653b;
     --color-success: #6daa45;
@@ -55,6 +58,7 @@
         --color-text-faint: #4a4947;
         --color-primary: #4f98a3;
         --color-primary-hover: #227f8b;
+        --color-primary-highlight: #313b3b;
         --color-error: #d163a7;
         --color-warning: #bb653b;
         --color-success: #6daa45;
@@ -78,10 +82,12 @@ body {
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
     transition: background 0.2s, color 0.2s;
 }
 
-/* Header */
+/* ── Header ── */
 .app-header {
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-divider);
@@ -94,21 +100,34 @@ body {
 .app-header-inner {
     display: flex;
     align-items: center;
-    gap: var(--space-2, 10px);
-    padding: var(--space-3, 6px) var(--space-4, 16px);
+    gap: 10px;
+    padding: 6px 16px;
     flex-wrap: wrap;
 }
 
 .app-title {
     flex: 1 1 auto;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .app-title svg {
     color: var(--color-primary);
+    flex-shrink: 0;
 }
 
-/* Buttons */
+.app-title-text {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Buttons ── */
 .btn-theme {
     background: none;
     border: 1px solid var(--color-border);
@@ -137,18 +156,18 @@ body {
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-weight: 600;
-    min-width: 36px;
     height: 36px;
+    min-height: 36px;
     display: flex;
     gap: 0.375rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.18s, box-shadow 0.18s;
-    min-height: 36px;
-    flex-shrink: 0;
-    margin-left: auto;
     align-items: center;
     justify-content: center;
+    padding: 0 0.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: background 0.18s, box-shadow 0.18s;
 }
 
 .btn-add:hover {
@@ -197,14 +216,16 @@ body {
     cursor: not-allowed;
 }
 
-/* Main Content */
+/* ── Main ── */
 .app-main {
     max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1rem 1rem calc(var(--bottom-bar-h) + 1rem);
+    flex: 1;
 }
 
-/* Filter Tabs */
+/* ── Filter Tabs ── */
 .filter-tabs {
     display: flex;
     margin-bottom: 0.5rem;
@@ -212,6 +233,7 @@ body {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: 0.25rem;
+    gap: 2px;
 }
 
 .filter-tab {
@@ -226,6 +248,7 @@ body {
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
     text-align: center;
+    white-space: nowrap;
 }
 
 .filter-tab.active {
@@ -239,7 +262,22 @@ body {
     color: var(--color-text);
 }
 
-/* Empty State */
+/* Day filter bar */
+#day-filter-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+#day-filter-bar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ── Empty State ── */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -266,15 +304,14 @@ body {
     max-width: 28ch;
 }
 
-/* Task List */
+/* ── Task List ── */
 #task-list {
-    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-/* Task Card */
+/* ── Task Card ── */
 .task-card {
     position: relative;
     overflow: hidden;
@@ -324,16 +361,32 @@ body {
 .task-card-inner {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
+    flex-direction: column;
     background: var(--color-surface);
     border-radius: var(--radius-lg);
-    transition: transform 0.0s;
+    transition: border-color 0.18s;
     will-change: transform;
+    overflow: hidden;
 }
 
-/* Checkbox */
+/* Top row: checkbox + title + action buttons */
+.task-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0.75rem 0.5rem;
+}
+
+/* Bottom row: meta + day dots + toggle chevron */
+.task-card-bottom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.75rem 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* ── Checkbox ── */
 .task-checkbox {
     width: 20px;
     height: 20px;
@@ -366,15 +419,11 @@ body {
     color: white;
 }
 
-/* Task content */
+/* ── Task content ── */
 .task-content {
     flex: 1;
     min-width: 0;
-}
-
-.task-header {
-    display: flex;
-    justify-content: space-between;
+    cursor: pointer;
 }
 
 .task-title {
@@ -384,11 +433,6 @@ body {
     word-break: break-word;
     line-height: 1.45;
     transition: color 0.18s;
-}
-
-.task-meta {
-    display: flex;
-    justify-content: space-between;
 }
 
 .task-card.done .task-title {
@@ -401,13 +445,14 @@ body {
     font-style: italic;
 }
 
+/* ── Task meta ── */
 .task-meta {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--color-text-faint);
-    margin-top: 0.25rem;
+    white-space: nowrap;
 }
 
-/* Status badge */
+/* ── Status badge ── */
 .task-badge {
     font-size: 0.6875rem;
     font-weight: 600;
@@ -415,6 +460,7 @@ body {
     border-radius: 99px;
     letter-spacing: 0.02em;
     flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .badge-done {
@@ -427,19 +473,31 @@ body {
     color: var(--color-warning);
 }
 
-/* Task action buttons */
+.badge-active {
+    display: none;
+}
+
+body.filter-all .badge-active {
+    background: oklch(from var(--color-primary) l c h / 0.12);
+    color: var(--color-primary);
+    display: inline-block;
+}
+
+body:not(.filter-all):not(.filter-done) .badge-done {
+    display: none;
+}
+
+body:not(.filter-all):not(.filter-ignored) .badge-ignored {
+    display: none;
+}
+
+/* ── Task action buttons ── */
 .task-actions {
     display: flex;
     gap: 0.25rem;
-    opacity: 0;
-    transition: opacity 0.15s;
     flex-shrink: 0;
     align-items: center;
-}
-
-.task-card:hover .task-actions,
-.task-card:focus-within .task-actions {
-    opacity: 1;
+    margin-left: auto;
 }
 
 .task-action-btn {
@@ -465,31 +523,182 @@ body {
     color: var(--color-error);
 }
 
-/* Always show actions on touch devices */
-@media (hover: none) {
-    .task-actions {
-        opacity: 1;
-    }
+/* ── Detail panel (collapsible) ── */
+.task-detail-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding 0.2s;
+    padding: 0 0.75rem;
 }
 
-/* Swipe hint */
+.task-detail-panel.open {
+    max-height: 400px;
+    padding: 0.25rem 0.75rem 0.25rem;
+}
+
+.task-detail {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    word-break: break-word;
+    white-space: pre-wrap;
+    border-top: 1px solid var(--color-divider);
+    padding-top: 0.5rem;
+}
+
+/* ── Toggle chevron button ── */
+.task-toggle-btn {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: var(--color-text-faint);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, background 0.15s, transform 0.2s;
+}
+
+.task-toggle-btn:hover {
+    color: var(--color-text-muted);
+    background: var(--color-surface-offset);
+}
+
+.task-toggle-btn.expanded svg {
+    transform: rotate(180deg);
+}
+
+.task-toggle-btn svg {
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.task-toggle-spacer {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+/* ── Day picker in modal ── */
+.day-picker-row {
+    margin-top: 16px;
+}
+
+.day-picker {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.day-btn {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 120ms, background 120ms, border-color 120ms;
+}
+
+.day-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+}
+
+.day-btn.active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: var(--color-primary-highlight);
+}
+
+/* ── Day dots on task cards ── */
+.task-day-dots {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+}
+
+.day-dot {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+}
+
+.day-dot.on {
+    color: var(--color-primary);
+    background: var(--color-primary-highlight);
+}
+
+.day-dot.off {
+    color: var(--color-text-faint);
+    background: var(--color-surface-offset);
+}
+
+/* ── Swipe hint ── */
 .swipe-hint {
     font-size: 0.7rem;
     color: var(--color-text-faint);
     text-align: center;
-    padding: 0.25rem 0 0.5rem;
+    padding: 0.5rem 0 0.25rem;
     letter-spacing: 0.03em;
+    margin: 0;
 }
 
-/* Reset note */
-.reset-note {
-    font-size: 0.75rem;
+/* ── Fixed bottom bar: copyright + reset note ── */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: var(--bottom-bar-h);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-divider);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    box-shadow: 0 -1px 6px oklch(0.2 0.01 80 / 0.05);
+}
+
+.bottom-bar-copy,
+.bottom-bar-reset {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
     color: var(--color-text-faint);
-    text-align: center;
-    margin-top: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Modal */
+.bottom-bar-sep {
+    font-size: 0.72rem;
+    color: var(--color-text-faint);
+    flex-shrink: 0;
+}
+
+@media (max-width: 400px) {
+    .bottom-bar-copy {
+        display: none;
+    }
+
+    .bottom-bar-sep {
+        display: none;
+    }
+}
+
+/* ── Modal ── */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -521,81 +730,6 @@ body {
     padding: 1.5rem 1.25rem 2rem;
     box-shadow: var(--color-shadow-md);
     animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Day filter bar */
-#day-filter-bar {
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    flex-wrap: nowrap;
-    padding-bottom: 2px;
-    margin-top: 4px;
-}
-
-#day-filter-bar::-webkit-scrollbar {
-    display: none;
-}
-
-/* Day picker in modal */
-.day-picker-row {
-    margin-top: 16px;
-}
-
-.day-picker {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-}
-
-.day-btn {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 9999px;
-    border: 1px solid var(--color-border, #d4d1ca);
-    background: none;
-    color: var(--color-text-muted, #888);
-    cursor: pointer;
-    transition: color 120ms, background 120ms, border-color 120ms;
-}
-
-.day-btn:hover {
-    color: var(--color-text, #222);
-    border-color: var(--color-text-muted, #888);
-}
-
-.day-btn.active {
-    color: var(--color-primary, #01696f);
-    border-color: var(--color-primary, #01696f);
-    background: var(--color-primary-highlight, #cedcd8);
-}
-
-/* Day dots on task cards */
-.task-day-dots {
-    display: flex;
-    gap: 3px;
-    margin-top: 4px;
-    flex-wrap: wrap;
-}
-
-.day-dot {
-    font-size: 0.6rem;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: 9999px;
-    letter-spacing: 0.02em;
-}
-
-.day-dot.on {
-    color: var(--color-primary, #01696f);
-    background: var(--color-primary-highlight, #cedcd8);
-}
-
-.day-dot.off {
-    color: var(--color-text-faint, #bab9b4);
-    background: var(--color-surface-offset, #f3f0ec);
 }
 
 @media (min-width: 576px) {
@@ -685,7 +819,7 @@ body {
     margin-top: 1.25rem;
 }
 
-/* Language navigator */
+/* ── Language switcher ── */
 .lang-switcher {
     flex: 1 1 auto;
     display: flex;
@@ -696,18 +830,18 @@ body {
 .lang-arrow {
     background: none;
     border: 1px solid transparent;
-    color: var(--color-text-muted, #888);
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 4px 6px;
     font-size: 0.85rem;
     line-height: 1;
-    border-radius: var(--radius-sm, 4px);
+    border-radius: var(--radius-sm);
     transition: color 120ms, background 120ms, border-color 120ms;
 }
 
 .lang-arrow:hover {
-    color: var(--color-text, #222);
-    background: var(--color-surface-offset, #eee);
+    color: var(--color-text);
+    background: var(--color-surface-offset);
 }
 
 .lang-arrow:disabled {
@@ -726,10 +860,10 @@ body {
     font-size: 0.7rem;
     font-weight: 600;
     padding: 2px 6px;
-    border-radius: var(--radius-sm, 4px);
+    border-radius: var(--radius-sm);
     border: 1px solid transparent;
     background: none;
-    color: var(--color-text-muted, #888);
+    color: var(--color-text-muted);
     cursor: pointer;
     letter-spacing: 0.03em;
     line-height: 1.6;
@@ -737,17 +871,22 @@ body {
 }
 
 .lang-btn:hover {
-    color: var(--color-text, #222);
-    background: var(--color-surface-offset, #eee);
+    color: var(--color-text);
+    background: var(--color-surface-offset);
 }
 
 .lang-btn.active {
-    color: var(--color-primary, #01696f);
-    border-color: var(--color-primary, #01696f);
-    background: var(--color-primary-highlight, #cedcd8);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: var(--color-primary-highlight);
 }
 
-@media (max-width: 400px) {
+/* ── Responsive ── */
+@media (max-width: 575px) {
+    .btn-add-text {
+        display: none;
+    }
+
     .app-title-text {
         display: none;
     }
@@ -767,17 +906,7 @@ body {
     }
 }
 
-@media (max-width: 575px) {
-    .btn-add-text {
-        display: none;
-    }
-
-    .app-title-text {
-        display: none;
-    }
-}
-
-/* Reduced motion */
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;

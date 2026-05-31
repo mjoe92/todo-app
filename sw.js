@@ -6,7 +6,7 @@
  *   The browser will detect the changed sw.js, install the new cache
  *   in the background, and activate it on the next page load.
  */
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME    = `todo-app-${CACHE_VERSION}`;
 
 // All local assets to pre-cache on installation
