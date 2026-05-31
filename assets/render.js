@@ -87,7 +87,6 @@ function statusBorderVar(status) {
   return 'var(--color-border)';
 }
 
-// Toggle the detail section of a task card
 function toggleDetail(id) {
   const el = document.getElementById('task-detail-' + id);
   const btn = document.getElementById('task-toggle-' + id);
@@ -128,7 +127,7 @@ function buildTaskCardHTML(task) {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
-        </button>` : `<span class="task-toggle-btn task-toggle-spacer"></span>`;
+        </button>` : `<span class="task-toggle-spacer"></span>`;
 
   const borderStyle = currentFilter === 'all'
     ? `style="border-color:${statusBorderVar(task.status)}"`

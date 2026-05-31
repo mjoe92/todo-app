@@ -179,6 +179,28 @@ body {
     opacity: 0.85;
 }
 
+/* Export / Import icon buttons in header */
+.btn-io {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.btn-io:hover {
+    background: var(--color-surface-offset);
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+}
+
 .btn-secondary {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
@@ -452,7 +474,12 @@ body {
     white-space: nowrap;
 }
 
-/* ── Status badge ── */
+/* ── Status badge ──
+   Visible only when filter-all is active on <body>.
+   badge-active is always hidden except under "All".
+   badge-done / badge-ignored are always shown so they keep their space,
+   but we hide them when not on "All" via the rules below.
+--*/
 .task-badge {
     font-size: 0.6875rem;
     font-weight: 600;
@@ -461,8 +488,16 @@ body {
     letter-spacing: 0.02em;
     flex-shrink: 0;
     white-space: nowrap;
+    /* hidden by default; shown only in All filter */
+    display: none;
 }
 
+/* Under "All" filter, show every badge */
+body.filter-all .task-badge {
+    display: inline-block;
+}
+
+/* Badge colour variants */
 .badge-done {
     background: oklch(from var(--color-success) l c h / 0.15);
     color: var(--color-success);
@@ -474,21 +509,8 @@ body {
 }
 
 .badge-active {
-    display: none;
-}
-
-body.filter-all .badge-active {
     background: oklch(from var(--color-primary) l c h / 0.12);
     color: var(--color-primary);
-    display: inline-block;
-}
-
-body:not(.filter-all):not(.filter-done) .badge-done {
-    display: none;
-}
-
-body:not(.filter-all):not(.filter-ignored) .badge-ignored {
-    display: none;
 }
 
 /* ── Task action buttons ── */
@@ -511,7 +533,23 @@ body:not(.filter-all):not(.filter-ignored) .badge-ignored {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s, color 0.15s;
+    /* invisible by default on non-touch devices; fade in on card hover */
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+
+/* Show buttons when the card is hovered (desktop/pointer) */
+@media (hover: hover) {
+    .task-card:hover .task-action-btn {
+        opacity: 1;
+    }
+}
+
+/* On touch devices: keep action buttons always hidden (swipe is the action) */
+@media (hover: none) {
+    .task-action-btn {
+        display: none !important;
+    }
 }
 
 .task-action-btn:hover {
@@ -696,6 +734,43 @@ body:not(.filter-all):not(.filter-ignored) .badge-ignored {
     .bottom-bar-sep {
         display: none;
     }
+}
+
+/* ── Drag-drop import overlay ── */
+.drop-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: oklch(from var(--color-primary) l c h / 0.18);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.drop-overlay.active {
+    display: flex;
+    pointer-events: all;
+}
+
+.drop-overlay-inner {
+    border: 2px dashed var(--color-primary);
+    border-radius: var(--radius-xl);
+    padding: 3rem 4rem;
+    color: var(--color-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--color-surface);
+    box-shadow: var(--color-shadow-md);
+}
+
+.drop-overlay-inner svg {
+    opacity: 0.7;
 }
 
 /* ── Modal ── */
