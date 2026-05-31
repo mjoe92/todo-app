@@ -1,25 +1,38 @@
 /**
  * Export / Import tasks as a JSON file.
  *
- * Export  → downloads my.tasks.json
- * Import  → reads a .tasks.json file (picked via button or drag-dropped onto the page)
- *           and MERGES tasks by id (new tasks added, existing ones untouched)
+ * Export → opens a modal with two choices:
+ *           1. Save file — downloads my.tasks.json
+ *           2. Send email — opens mailto: with JSON in body
  *
- * Double-click a .tasks.json file in the OS will trigger the browser's file-open dialog
- * if the user has associated the extension with the browser, or they can simply drag the
- * file onto the app window — the drop overlay handles both.
+ * Import → reads a .tasks.json file (picked via button or drag-dropped onto the page)
+ *           and MERGES tasks by id (new tasks added, existing ones untouched)
  */
 
 const IO_EXTENSION = '.tasks.json';
 const IO_MIME = 'application/json';
 
-/** Export **/
-function exportTasks() {
-  const data = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    tasks: getTasks()
-  };
+/** Export modal */
+function openExportModal() {
+  document.getElementById('export-modal').classList.add('open');
+  switchExportTab('file');
+}
+
+function closeExportModal() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+
+function switchExportTab(tab) {
+  ['file', 'email'].forEach(t => {
+    document.getElementById('export-tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('export-tab-' + t).setAttribute('aria-selected', t === tab);
+    document.getElementById('export-panel-' + t).style.display = t === tab ? '' : 'none';
+  });
+}
+
+/** Export: save file */
+function exportTasksToFile() {
+  const data = buildExportPayload();
   const blob = new Blob([JSON.stringify(data, null, 2)], {type: IO_MIME});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -31,11 +44,39 @@ function exportTasks() {
     URL.revokeObjectURL(url);
     a.remove();
   }, 1000);
+  closeExportModal();
 }
 
-/** Import (core) **/
+/** Export: send email */
+function exportTasksViaEmail() {
+  const to = (document.getElementById('export-email-input').value || '').trim();
+  const subject = (document.getElementById('export-email-subject').value || 'My Tasks export').trim();
+  const body = (document.getElementById('export-email-body').value || '').trim();
+
+  const data = buildExportPayload();
+  const json = JSON.stringify(data, null, 2);
+
+  const fullBody = body + '\n\n--- Task data (JSON) ---\n' + json;
+
+  window.location.href = 'mailto:' + encodeURIComponent(to)
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(fullBody);
+  closeExportModal();
+}
+
+function buildExportPayload() {
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    tasks: getTasks()
+  };
+}
+
+/** Import (core) */
 function importFromFile(file) {
-  if (!file) return;
+  if (!file) {
+    return;
+  }
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
@@ -52,7 +93,9 @@ function importFromFile(file) {
       let added = 0;
 
       incoming.forEach(task => {
-        if (!task.id || !task.title) return;   // skip malformed entries
+        if (!task.id || !task.title) {
+          return;
+        }
         if (!existingIds.has(task.id)) {
           existing.push(task);
           existingIds.add(task.id);
@@ -70,24 +113,28 @@ function importFromFile(file) {
   reader.readAsText(file);
 }
 
-/** Import via <input type=file> button **/
+/** Import via <input type=file> button */
 function triggerImport() {
   document.getElementById('import-file-input').click();
 }
 
 function onImportFileChange(input) {
   const file = input.files[0];
-  if (file) importFromFile(file);
-  input.value = '';   // reset so the same file can be picked again
+  if (file) {
+    importFromFile(file);
+  }
+  input.value = '';
 }
 
-/** Drag-and-drop import **/
+/** Drag-and-drop import */
 (function setupDrop() {
   const overlay = document.getElementById('drop-overlay');
   let dragCounter = 0;
 
   document.addEventListener('dragenter', (e) => {
-    if (!hasJsonFile(e.dataTransfer)) return;
+    if (!hasJsonFile(e.dataTransfer)) {
+      return;
+    }
     e.preventDefault();
     dragCounter++;
     overlay.classList.add('active');
@@ -102,7 +149,9 @@ function onImportFileChange(input) {
   });
 
   document.addEventListener('dragover', (e) => {
-    if (!hasJsonFile(e.dataTransfer)) return;
+    if (!hasJsonFile(e.dataTransfer)) {
+      return;
+    }
     e.preventDefault();
   });
 
@@ -111,21 +160,34 @@ function onImportFileChange(input) {
     dragCounter = 0;
     overlay.classList.remove('active');
     const file = e.dataTransfer.files[0];
-    if (file) importFromFile(file);
+    if (file) {
+      importFromFile(file);
+    }
   });
 
   function hasJsonFile(dt) {
-    if (!dt) return false;
+    if (!dt) {
+      return false;
+    }
     return Array.from(dt.items || []).some(item =>
       item.kind === 'file' && (item.type === IO_MIME || item.type === '')
     );
   }
 })();
 
-/** Toast notification **/
+/** Close the export modal on the backdrop click */
+document.getElementById('export-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('export-modal')) {
+    closeExportModal();
+  }
+});
+
+/** Toast notification */
 function showImportToast(added, skipped) {
   const existing = document.getElementById('import-toast');
-  if (existing) existing.remove();
+  if (existing) {
+    existing.remove();
+  }
 
   const toast = document.createElement('div');
   toast.id = 'import-toast';

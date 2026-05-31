@@ -12,7 +12,7 @@ function setupSwipe(card, id, onDelete, onIgnore) {
   let startX = 0, startY = 0, dx = 0;
   let swiping = false, mouseLocked = false, scrollLocked = false;
 
-  /* Helpers */
+  /** Helpers */
   function begin(x, y) {
     startX = x;
     startY = y;
@@ -72,7 +72,7 @@ function setupSwipe(card, id, onDelete, onIgnore) {
     }
   }
 
-  /* Touch events */
+  /** Touch events */
   inner.addEventListener('touchstart', e => begin(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
   inner.addEventListener('touchmove', e => {
     move(e.touches[0].clientX, e.touches[0].clientY);
@@ -82,7 +82,7 @@ function setupSwipe(card, id, onDelete, onIgnore) {
   }, {passive: false});
   inner.addEventListener('touchend', end);
 
-  /* Mouse events (desktop fallback) */
+  /** Mouse events (desktop fallback) */
   inner.addEventListener('mousedown', e => {
     if (e.button !== 0) {
       return;

@@ -6,7 +6,7 @@
  *   The browser will detect the changed sw.js, install the new cache
  *   in the background, and activate it on the next page load.
  */
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME    = `todo-app-${CACHE_VERSION}`;
 
 // All local assets to pre-cache on installation
@@ -19,18 +19,23 @@ const PRECACHE_URLS = [
   './assets/theme.js',
   './assets/tasks.js',
   './assets/swipe.js',
+  './assets/sort.js',
   './assets/render.js',
   './assets/modal.js',
   './assets/app.js',
   './assets/sw-register.js',
 ];
 
-// Install: pre-cache all local assets
+// Install: pre-cache all local assets individually so one failure doesn't abort the install
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting()) // activate immediately
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(
+        PRECACHE_URLS.map(url =>
+          cache.add(url).catch(err => console.warn('[SW] Failed to cache:', url, err))
+        )
+      )
+    ).then(() => self.skipWaiting())
   );
 });
 

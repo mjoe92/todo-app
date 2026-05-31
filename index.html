@@ -29,8 +29,8 @@
       <button class="lang-arrow" id="lang-next" type="button" onclick="shiftLang(1)" aria-label="Next languages">&#8250;</button>
     </div>
 
-    <!-- Export / Import -->
-    <button class="btn-io" onclick="exportTasks()" aria-label="Export tasks" title="Export tasks">
+    <!-- Export opens modal; Import stays direct -->
+    <button class="btn-io" onclick="openExportModal()" aria-label="Export tasks" title="Export tasks">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -102,6 +102,7 @@
   </div>
 </div>
 
+<!-- Task create/edit modal -->
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-card">
     <div class="modal-header">
@@ -130,11 +131,96 @@
   </div>
 </div>
 
+<!-- Export modal -->
+<div class="modal-overlay" id="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title" id="export-modal-title">Export Tasks</span>
+      <button class="modal-close" onclick="closeExportModal()" aria-label="Close export modal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="export-tabs" role="tablist">
+      <button class="export-tab active" id="export-tab-file" role="tab" aria-selected="true"
+              onclick="switchExportTab('file')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        Save file
+      </button>
+      <button class="export-tab" id="export-tab-email" role="tab" aria-selected="false"
+              onclick="switchExportTab('email')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M2 7l10 7 10-7"/>
+        </svg>
+        Send email
+      </button>
+    </div>
+
+    <!-- File tab -->
+    <div class="export-panel" id="export-panel-file">
+      <p class="export-desc">Download your tasks as a <code>.tasks.json</code> file. You can import it later by dragging it onto the app or using the import button.</p>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeExportModal()">Cancel</button>
+        <button class="btn-primary" onclick="exportTasksToFile()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:4px">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download
+        </button>
+      </div>
+    </div>
+
+    <!-- Email tab -->
+    <div class="export-panel" id="export-panel-email" style="display:none">
+      <p class="export-desc">Send your tasks as a JSON attachment via your default email client.</p>
+      <label class="form-label" for="export-email-input">Recipient email address</label>
+      <input type="email" class="form-input" id="export-email-input"
+             placeholder="you@example.com" autocomplete="email"
+             style="margin-bottom:0.75rem">
+      <label class="form-label" for="export-email-subject">Subject</label>
+      <input type="text" class="form-input" id="export-email-subject"
+             value="My Tasks export" style="margin-bottom:0.75rem">
+      <label class="form-label" for="export-email-body">Message</label>
+      <textarea class="form-input" id="export-email-body" rows="3"
+                style="margin-bottom:0">Hi,
+
+Please find my tasks export attached below as JSON.
+
+You can import it by opening the Todo App and dragging the file onto the page, or using the import button.
+
+Best regards</textarea>
+      <p class="export-note">Note: your email client will open with the task data in the email body, since browsers cannot attach files to mailto links.</p>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeExportModal()">Cancel</button>
+        <button class="btn-primary" onclick="exportTasksViaEmail()" id="export-email-send-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:4px">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Send
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script src="./assets/i18n.js"></script>
 <script src="./assets/storage.js"></script>
 <script src="./assets/theme.js"></script>
 <script src="./assets/tasks.js"></script>
 <script src="./assets/swipe.js"></script>
+<script src="./assets/sort.js"></script>
 <script src="./assets/render.js"></script>
 <script src="./assets/modal.js"></script>
 <script src="./assets/io.js"></script>

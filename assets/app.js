@@ -27,7 +27,7 @@ document.getElementById('task-list').addEventListener('click', e => {
   }
 });
 
-/* Keyboard on checkboxes */
+/** Keyboard on checkboxes */
 document.getElementById('task-list').addEventListener('keydown', e => {
   if (e.key !== 'Enter' && e.key !== ' ') {
     return;
@@ -43,7 +43,7 @@ document.getElementById('task-list').addEventListener('keydown', e => {
   renderTasks();
 });
 
-/* Modal events */
+/** Modal events */
 document.getElementById('modal').addEventListener('click', e => {
   if (e.target === document.getElementById('modal')) {
     closeModal();
@@ -56,7 +56,7 @@ document.getElementById('task-input').addEventListener('keydown', e => {
   }
 });
 
-/* Keyboard shortcuts */
+/** Keyboard shortcuts */
 document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   if (e.key === 'n' && !e.ctrlKey && !e.metaKey && tag !== 'TEXTAREA' && tag !== 'INPUT') {
@@ -68,7 +68,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* Init */
+/** Init */
 initTheme();
 initTasks();
 initI18n();

@@ -226,6 +226,8 @@ body {
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     transition: background 0.15s;
 }
 
@@ -350,6 +352,18 @@ body {
     box-shadow: var(--color-shadow-md);
 }
 
+/* Drag states */
+.task-card.dragging {
+    opacity: 0.45;
+    box-shadow: none;
+}
+
+.task-card.drag-over {
+    outline: 2px dashed var(--color-primary);
+    outline-offset: -2px;
+    background: oklch(from var(--color-primary) l c h / 0.04);
+}
+
 /* Swipe backgrounds */
 .task-card-bg {
     position: absolute;
@@ -391,11 +405,11 @@ body {
     overflow: hidden;
 }
 
-/* Top row: checkbox + title + action buttons */
+/* Top row: drag handle + checkbox + title + action buttons */
 .task-card-top {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.5rem;
     padding: 0.75rem 0.75rem 0.5rem;
 }
 
@@ -406,6 +420,42 @@ body {
     gap: 0.5rem;
     padding: 0 0.75rem 0.5rem;
     flex-wrap: wrap;
+}
+
+/* ── Drag handle ── */
+.drag-handle {
+    flex-shrink: 0;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-faint);
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.15s;
+    margin-top: 2px;
+    padding: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* Show drag handle on desktop card hover */
+@media (hover: hover) {
+    .task-card:hover .drag-handle {
+        opacity: 1;
+    }
+}
+
+/* On touch devices: drag handle always visible for touch-sort */
+@media (hover: none) {
+    .drag-handle {
+        opacity: 1;
+        cursor: grab;
+    }
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+    color: var(--color-primary);
 }
 
 /* ── Checkbox ── */
@@ -441,6 +491,25 @@ body {
     color: white;
 }
 
+/* Future day: visible but non-interactive — dimmed, no hover, no pointer */
+.task-checkbox.locked {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+}
+
+.task-checkbox.locked:hover {
+    border-color: var(--color-border);
+}
+
+/* Past day: invisible placeholder keeps card layout aligned */
+.task-checkbox-placeholder {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
 /* ── Task content ── */
 .task-content {
     flex: 1;
@@ -474,12 +543,7 @@ body {
     white-space: nowrap;
 }
 
-/* ── Status badge ──
-   Visible only when filter-all is active on <body>.
-   badge-active is always hidden except under "All".
-   badge-done / badge-ignored are always shown so they keep their space,
-   but we hide them when not on "All" via the rules below.
---*/
+/* ── Status badge ── */
 .task-badge {
     font-size: 0.6875rem;
     font-weight: 600;
@@ -488,16 +552,13 @@ body {
     letter-spacing: 0.02em;
     flex-shrink: 0;
     white-space: nowrap;
-    /* hidden by default; shown only in All filter */
     display: none;
 }
 
-/* Under "All" filter, show every badge */
 body.filter-all .task-badge {
     display: inline-block;
 }
 
-/* Badge colour variants */
 .badge-done {
     background: oklch(from var(--color-success) l c h / 0.15);
     color: var(--color-success);
@@ -533,19 +594,16 @@ body.filter-all .task-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* invisible by default on non-touch devices; fade in on card hover */
     opacity: 0;
     transition: opacity 0.15s, background 0.15s, color 0.15s;
 }
 
-/* Show buttons when the card is hovered (desktop/pointer) */
 @media (hover: hover) {
     .task-card:hover .task-action-btn {
         opacity: 1;
     }
 }
 
-/* On touch devices: keep action buttons always hidden (swipe is the action) */
 @media (hover: none) {
     .task-action-btn {
         display: none !important;
@@ -582,6 +640,10 @@ body.filter-all .task-badge {
     white-space: pre-wrap;
     border-top: 1px solid var(--color-divider);
     padding-top: 0.5rem;
+}
+
+.task-detail:hover {
+    color: var(--color-text);
 }
 
 /* ── Toggle chevron button ── */
@@ -773,7 +835,7 @@ body.filter-all .task-badge {
     opacity: 0.7;
 }
 
-/* ── Modal ── */
+/* ── Modal (shared) ── */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -805,6 +867,8 @@ body.filter-all .task-badge {
     padding: 1.5rem 1.25rem 2rem;
     box-shadow: var(--color-shadow-md);
     animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 90dvh;
+    overflow-y: auto;
 }
 
 @media (min-width: 576px) {
@@ -892,6 +956,57 @@ body.filter-all .task-badge {
     gap: 0.75rem;
     justify-content: flex-end;
     margin-top: 1.25rem;
+}
+
+/* ── Export modal tabs ── */
+.export-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.25rem;
+    background: var(--color-surface-offset);
+    padding: 3px;
+    border-radius: var(--radius-md);
+}
+
+.export-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border: none;
+    border-radius: calc(var(--radius-md) - 2px);
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.export-tab.active {
+    background: var(--color-surface-2);
+    color: var(--color-primary);
+    box-shadow: var(--color-shadow-sm);
+}
+
+.export-tab:hover:not(.active) {
+    color: var(--color-text);
+}
+
+.export-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.55;
+}
+
+.export-note {
+    font-size: 0.75rem;
+    color: var(--color-text-faint);
+    margin-top: 0.75rem;
+    line-height: 1.5;
 }
 
 /* ── Language switcher ── */

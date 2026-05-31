@@ -221,19 +221,19 @@ const TRANSLATIONS = {
   },
 };
 
-const SUPPORTED_LANGS = ['en', 'hu', 'de', 'ru', 'fr', 'es'];
+const SUPPORTED_LANGUAGES = ['en', 'hu', 'de', 'ru', 'fr', 'es'];
 const PAGE_SIZE = 3;
 let currentLang = 'en';
 let langOffset = 0;
 
 function detectLang() {
   const saved = localStorage.getItem('todo-lang');
-  if (saved && SUPPORTED_LANGS.includes(saved)) {
+  if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
     return saved;
   }
 
   const browser = (navigator.language || 'en').slice(0, 2).toLowerCase();
-  return SUPPORTED_LANGS.includes(browser) ? browser : 'en';
+  return SUPPORTED_LANGUAGES.includes(browser) ? browser : 'en';
 }
 
 function t(key, ...args) {
@@ -249,40 +249,44 @@ function renderLangSwitcher() {
     return;
   }
 
-  const visible = SUPPORTED_LANGS.slice(langOffset, langOffset + PAGE_SIZE);
+  const visible = SUPPORTED_LANGUAGES.slice(langOffset, langOffset + PAGE_SIZE);
   container.innerHTML = visible.map(lang =>
     `<button class="lang-btn ${lang === currentLang ? 'active' : ''}" data-lang="${lang}" type="button" onclick="setLang('${lang}')">${lang.toUpperCase()}</button>`
   ).join('');
   prevBtn.disabled = langOffset === 0;
-  nextBtn.disabled = langOffset + PAGE_SIZE >= SUPPORTED_LANGS.length;
+  nextBtn.disabled = langOffset + PAGE_SIZE >= SUPPORTED_LANGUAGES.length;
 }
 
 function shiftLang(dir) {
-  const max = Math.max(0, SUPPORTED_LANGS.length - PAGE_SIZE);
+  const max = Math.max(0, SUPPORTED_LANGUAGES.length - PAGE_SIZE);
   langOffset = Math.min(max, Math.max(0, langOffset + dir));
   renderLangSwitcher();
 }
 
 function setLang(lang) {
-  if (!SUPPORTED_LANGS.includes(lang)) {
+  if (!SUPPORTED_LANGUAGES.includes(lang)) {
     return;
   }
 
   currentLang = lang;
   localStorage.setItem('todo-lang', lang);
   document.documentElement.lang = lang;
-  const idx = SUPPORTED_LANGS.indexOf(currentLang);
-  langOffset = Math.min(Math.max(0, Math.floor(idx / PAGE_SIZE) * PAGE_SIZE), Math.max(0, SUPPORTED_LANGS.length - PAGE_SIZE));
+  const idx = SUPPORTED_LANGUAGES.indexOf(currentLang);
+  langOffset = Math.min(Math.max(0, Math.floor(idx / PAGE_SIZE) * PAGE_SIZE), Math.max(0, SUPPORTED_LANGUAGES.length - PAGE_SIZE));
   applyTranslations();
   renderTasks();
 }
 
 function applyTranslations() {
   const title = document.querySelector('.app-title-text');
-  if (title) title.textContent = t('appTitle');
+  if (title) {
+    title.textContent = t('appTitle');
+  }
 
   const btnText = document.querySelector('.btn-add-text');
-  if (btnText) btnText.textContent = t('newTask');
+  if (btnText) {
+    btnText.textContent = t('newTask');
+  }
 
   const filterKeys = ['filterActive', 'filterDone', 'filterIgnored', 'filterAll'];
   document.querySelectorAll('.filter-tab').forEach((tab, i) => {
@@ -290,25 +294,39 @@ function applyTranslations() {
   });
 
   const hint = document.getElementById('swipe-hint');
-  if (hint) hint.textContent = t('swipeHint');
+  if (hint) {
+    hint.textContent = t('swipeHint');
+  }
 
   const formLabel = document.querySelector('.form-label');
-  if (formLabel) formLabel.textContent = t('modalLabel');
+  if (formLabel) {
+    formLabel.textContent = t('modalLabel');
+  }
 
   const input = document.getElementById('task-input');
-  if (input) input.placeholder = t('modalPlaceholder');
+  if (input) {
+    input.placeholder = t('modalPlaceholder');
+  }
 
   const detailLabel = document.getElementById('detail-label');
-  if (detailLabel) detailLabel.textContent = t('modalDetailLabel');
+  if (detailLabel) {
+    detailLabel.textContent = t('modalDetailLabel');
+  }
 
   const detailInput = document.getElementById('task-detail-input');
-  if (detailInput) detailInput.placeholder = t('modalDetailPlaceholder');
+  if (detailInput) {
+    detailInput.placeholder = t('modalDetailPlaceholder');
+  }
 
   const cancelBtn = document.querySelector('.btn-secondary');
-  if (cancelBtn) cancelBtn.textContent = t('modalCancel');
+  if (cancelBtn) {
+    cancelBtn.textContent = t('modalCancel');
+  }
 
   const copyright = document.getElementById('footer-copyright');
-  if (copyright) copyright.textContent = t('copyright');
+  if (copyright) {
+    copyright.textContent = t('copyright');
+  }
 
   renderLangSwitcher();
   renderDayFilterBar();
@@ -316,7 +334,7 @@ function applyTranslations() {
 
 function initI18n() {
   currentLang = detectLang();
-  const idx = SUPPORTED_LANGS.indexOf(currentLang);
+  const idx = SUPPORTED_LANGUAGES.indexOf(currentLang);
   if (idx >= PAGE_SIZE) {
     langOffset = Math.floor(idx / PAGE_SIZE) * PAGE_SIZE;
   }
