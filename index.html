@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo App</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300..700&display=swap" rel="stylesheet">
@@ -15,7 +14,6 @@
 
 <header class="app-header">
   <div class="app-header-inner">
-
     <div class="app-title">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Todo App logo">
         <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" opacity="0.15"/>
@@ -26,23 +24,9 @@
     </div>
 
     <div class="lang-switcher" role="group" aria-label="Language">
-      <button
-        class="lang-arrow"
-        id="lang-prev"
-        type="button"
-        onclick="shiftLang(-1)"
-        aria-label="Previous languages"
-      >&#8249;</button>
-
+      <button class="lang-arrow" id="lang-prev" type="button" onclick="shiftLang(-1)" aria-label="Previous languages">&#8249;</button>
       <div class="lang-pages" id="lang-pages"></div>
-
-      <button
-        class="lang-arrow"
-        id="lang-next"
-        type="button"
-        onclick="shiftLang(1)"
-        aria-label="Next languages"
-      >&#8250;</button>
+      <button class="lang-arrow" id="lang-next" type="button" onclick="shiftLang(1)" aria-label="Next languages">&#8250;</button>
     </div>
 
     <button class="btn-add" onclick="openModal()" aria-label="Create new task">
@@ -62,24 +46,23 @@
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
     </button>
-
   </div>
 </header>
 
 <main class="app-main">
-
   <div class="filter-tabs" role="tablist" aria-label="Filter tasks">
-    <button class="filter-tab active" role="tab" aria-selected="true" onclick="setFilter('active', this)">Active</button>
-    <button class="filter-tab" role="tab" aria-selected="false" onclick="setFilter('done', this)">Done</button>
-    <button class="filter-tab" role="tab" aria-selected="false" onclick="setFilter('ignored', this)">Ignored</button>
-    <button class="filter-tab" role="tab" aria-selected="false" onclick="setFilter('all', this)">All</button>
+    <button class="filter-tab active" role="tab" aria-selected="true"  onclick="setFilter('active', this)">Active</button>
+    <button class="filter-tab"        role="tab" aria-selected="false" onclick="setFilter('done',    this)">Done</button>
+    <button class="filter-tab"        role="tab" aria-selected="false" onclick="setFilter('ignored', this)">Ignored</button>
+    <button class="filter-tab"        role="tab" aria-selected="false" onclick="setFilter('all',     this)">All</button>
   </div>
+
+  <div id="day-filter-bar" class="filter-tabs" role="tablist" aria-label="Filter by day"></div>
 
   <div id="task-list" role="list" aria-label="Task list"></div>
 
   <p class="reset-note" id="reset-note"></p>
   <p class="swipe-hint" id="swipe-hint" style="display:none">&#8592; Swipe left to delete &nbsp;&middot;&nbsp; Swipe right to ignore &#8594;</p>
-
 </main>
 
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -93,10 +76,12 @@
         </svg>
       </button>
     </div>
-
     <label class="form-label" for="task-input">Task title</label>
     <textarea class="form-input" id="task-input" rows="3" placeholder="What needs to be done?" maxlength="300"></textarea>
-
+    <div class="day-picker-row">
+      <label class="form-label" id="day-picker-label">Visible on days</label>
+      <div id="day-picker" class="day-picker"></div>
+    </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="submitTask()" id="modal-submit">Add task</button>
@@ -112,6 +97,7 @@
 <script src="./assets/render.js"></script>
 <script src="./assets/modal.js"></script>
 <script src="./assets/app.js"></script>
+
 <script src="./assets/sw-register.js"></script>
 
 </body>

@@ -23,9 +23,15 @@ function setupSwipe(card, id, onDelete, onIgnore) {
     }
 
     function move(x, y) {
-        if (scrollLocked) return;
+        if (scrollLocked) {
+          return;
+        }
+
         const diffX = x - startX, diffY = y - startY;
-        if (!swiping && Math.abs(diffX) < 5 && Math.abs(diffY) < 5) return;
+        if (!swiping && Math.abs(diffX) < 5 && Math.abs(diffY) < 5) {
+          return;
+        }
+
         if (!swiping) {
             if (Math.abs(diffY) > Math.abs(diffX)) {
                 scrollLocked = true;
@@ -46,7 +52,10 @@ function setupSwipe(card, id, onDelete, onIgnore) {
     }
 
     function end() {
-        if (!swiping) return;
+        if (!swiping) {
+          return;
+        }
+
         inner.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
         if (dx < -SWIPE_THRESHOLD_PX) {
             inner.style.transform = 'translateX(-110%)';
@@ -67,18 +76,25 @@ function setupSwipe(card, id, onDelete, onIgnore) {
     inner.addEventListener('touchstart', e => begin(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
     inner.addEventListener('touchmove', e => {
         move(e.touches[0].clientX, e.touches[0].clientY);
-        if (swiping && !scrollLocked) e.preventDefault();
+        if (swiping && !scrollLocked) {
+          e.preventDefault();
+        }
     }, {passive: false});
     inner.addEventListener('touchend', end);
 
     /* Mouse events (desktop fallback) */
     inner.addEventListener('mousedown', e => {
-        if (e.button !== 0) return;
+        if (e.button !== 0) {
+          return;
+        }
+
         mouseLocked = true;
         begin(e.clientX, e.clientY);
     });
     window.addEventListener('mousemove', e => {
-        if (mouseLocked) move(e.clientX, e.clientY);
+        if (mouseLocked) {
+          move(e.clientX, e.clientY);
+        }
     });
     window.addEventListener('mouseup', () => {
         if (mouseLocked) {

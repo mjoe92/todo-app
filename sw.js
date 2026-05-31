@@ -6,23 +6,23 @@
  *   The browser will detect the changed sw.js, install the new cache
  *   in the background, and activate it on the next page load.
  */
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME    = `todo-app-${CACHE_VERSION}`;
 
 // All local assets to pre-cache on installation
 const PRECACHE_URLS = [
-    './',
-    './index.html',
-    './assets/style.css',
-    './assets/i18n.js',
-    './assets/storage.js',
-    './assets/theme.js',
-    './assets/tasks.js',
-    './assets/swipe.js',
-    './assets/render.js',
-    './assets/modal.js',
-    './assets/app.js',
-    './assets/sw-register.js',
+  './',
+  './index.html',
+  './assets/style.css',
+  './assets/i18n.js',
+  './assets/storage.js',
+  './assets/theme.js',
+  './assets/tasks.js',
+  './assets/swipe.js',
+  './assets/render.js',
+  './assets/modal.js',
+  './assets/app.js',
+  './assets/sw-register.js',
 ];
 
 // Install: pre-cache all local assets

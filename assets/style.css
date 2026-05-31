@@ -94,8 +94,8 @@ body {
 .app-header-inner {
     display: flex;
     align-items: center;
-    gap: var(--space-2, 8px);
-    padding: var(--space-3, 12px) var(--space-4, 16px);
+    gap: var(--space-2, 10px);
+    padding: var(--space-3, 6px) var(--space-4, 16px);
     flex-wrap: wrap;
 }
 
@@ -123,7 +123,6 @@ body {
     transition: background 0.18s, color 0.18s, border-color 0.18s;
     flex-shrink: 0;
     margin-left: auto;
-    order: 2;
 }
 
 .btn-theme:hover {
@@ -138,17 +137,18 @@ body {
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-weight: 600;
-    padding: 0.5rem 1rem;
+    min-width: 36px;
+    height: 36px;
     display: flex;
-    align-items: center;
     gap: 0.375rem;
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.18s, box-shadow 0.18s;
     min-height: 36px;
-    order: 4;
     flex-shrink: 0;
     margin-left: auto;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-add:hover {
@@ -199,16 +199,15 @@ body {
 
 /* Main Content */
 .app-main {
-    max-width: 600px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 1.25rem 1rem 5rem;
+    padding: 1rem;
 }
 
 /* Filter Tabs */
 .filter-tabs {
     display: flex;
-    gap: 0.375rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -217,7 +216,7 @@ body {
 
 .filter-tab {
     flex: 1;
-    padding: 0.4rem 0.5rem;
+    padding: 0.1rem 0.2rem;
     font-size: 0.8125rem;
     font-weight: 500;
     border: none;
@@ -269,6 +268,7 @@ body {
 
 /* Task List */
 #task-list {
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -372,6 +372,11 @@ body {
     min-width: 0;
 }
 
+.task-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .task-title {
     font-size: 0.9375rem;
     font-weight: 500;
@@ -379,6 +384,11 @@ body {
     word-break: break-word;
     line-height: 1.45;
     transition: color 0.18s;
+}
+
+.task-meta {
+    display: flex;
+    justify-content: space-between;
 }
 
 .task-card.done .task-title {
@@ -513,6 +523,81 @@ body {
     animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Day filter bar */
+#day-filter-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    margin-top: 4px;
+}
+
+#day-filter-bar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Day picker in modal */
+.day-picker-row {
+    margin-top: 16px;
+}
+
+.day-picker {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.day-btn {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border, #d4d1ca);
+    background: none;
+    color: var(--color-text-muted, #888);
+    cursor: pointer;
+    transition: color 120ms, background 120ms, border-color 120ms;
+}
+
+.day-btn:hover {
+    color: var(--color-text, #222);
+    border-color: var(--color-text-muted, #888);
+}
+
+.day-btn.active {
+    color: var(--color-primary, #01696f);
+    border-color: var(--color-primary, #01696f);
+    background: var(--color-primary-highlight, #cedcd8);
+}
+
+/* Day dots on task cards */
+.task-day-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.day-dot {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+}
+
+.day-dot.on {
+    color: var(--color-primary, #01696f);
+    background: var(--color-primary-highlight, #cedcd8);
+}
+
+.day-dot.off {
+    color: var(--color-text-faint, #bab9b4);
+    background: var(--color-surface-offset, #f3f0ec);
+}
+
 @media (min-width: 576px) {
     .modal-card {
         border-radius: var(--radius-xl);
@@ -602,7 +687,6 @@ body {
 
 /* Language navigator */
 .lang-switcher {
-    order: 3;
     flex: 1 1 auto;
     display: flex;
     align-items: center;
@@ -675,17 +759,10 @@ body {
     }
 
     .btn-theme {
-        order: unset;
         margin-left: 0;
     }
 
-    .lang-switcher {
-        order: unset;
-        flex: 0 0 auto;
-    }
-
     .btn-add {
-        order: unset;
         margin-left: 0;
     }
 }
