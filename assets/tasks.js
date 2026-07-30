@@ -10,10 +10,10 @@ function createTask(title, detail, days) {
     detail: detail || '',
     checked: false,
     checkedDays: {},
-    status: 'active',
+    status: STATUS_ACTIVE,
     statusDays: {},
     createdAt: Date.now(),
-    days: days && days.length ? days : [0,1,2,3,4,5,6],
+    days: days && days.length ? days : [...ALL_DAYS],
   });
   saveTasks(tasks);
 }
@@ -29,7 +29,7 @@ function updateTaskDetail(id, detail) {
 }
 
 function updateTaskDays(id, days) {
-  tasks = tasks.map(t => t.id === id ? {...t, days: days.length ? days : [0,1,2,3,4,5,6]} : t);
+  tasks = tasks.map(t => t.id === id ? {...t, days: days.length ? days : [...ALL_DAYS]} : t);
   saveTasks(tasks);
 }
 
@@ -37,13 +37,13 @@ function updateTaskDays(id, days) {
 function toggleCheck(id) {
   const key = todayDateKey();
   tasks = tasks.map(t => {
-    if (t.id !== id) return t;
+    if (t.id !== id) { return t; }
     const checkedDays = {...(t.checkedDays||{})};
     const nowChecked = !checkedDays[key];
-    if (nowChecked) checkedDays[key] = true; else delete checkedDays[key];
-    const todayStatus = (t.statusDays||{})[key] || 'active';
+    if (nowChecked) { checkedDays[key] = true; } else { delete checkedDays[key]; }
+    const todayStatus = (t.statusDays||{})[key] || STATUS_ACTIVE;
     return {...t, checkedDays, checked: nowChecked,
-      status: nowChecked ? 'done' : todayStatus};
+      status: nowChecked ? STATUS_DONE : todayStatus};
   });
   saveTasks(tasks);
 }
@@ -51,19 +51,19 @@ function toggleCheck(id) {
 /** Toggle ignore for the VIEWED day. Blocked on past days. */
 function ignoreTask(id, dateKey) {
   const key = dateKey || todayDateKey();
-  if (isPastDateKey(key)) return;
+  if (isPastDateKey(key)) { return; }
   tasks = tasks.map(t => {
-    if (t.id !== id) return t;
+    if (t.id !== id) { return t; }
     const statusDays = {...(t.statusDays||{})};
-    if (statusDays[key] === 'ignored') {
+    if (statusDays[key] === STATUS_IGNORED) {
       delete statusDays[key];
     } else {
-      statusDays[key] = 'ignored';
+      statusDays[key] = STATUS_IGNORED;
     }
     const todayKey     = todayDateKey();
     const todayChecked = !!(t.checkedDays||{})[todayKey];
-    const todayStatus  = statusDays[todayKey] || 'active';
-    return {...t, statusDays, status: todayChecked ? 'done' : todayStatus};
+    const todayStatus  = statusDays[todayKey] || STATUS_ACTIVE;
+    return {...t, statusDays, status: todayChecked ? STATUS_DONE : todayStatus};
   });
   saveTasks(tasks);
 }
@@ -74,11 +74,11 @@ function ignoreTask(id, dateKey) {
  */
 function deleteTask(id, dateKey) {
   const key = dateKey || todayDateKey();
-  if (isPastDateKey(key)) return;
+  if (isPastDateKey(key)) { return; }
   tasks = tasks.map(t => {
-    if (t.id !== id) return t;
+    if (t.id !== id) { return t; }
     const statusDays = {...(t.statusDays||{})};
-    statusDays[key] = 'deleted';
+    statusDays[key] = STATUS_DELETED;
     return {...t, statusDays};
   });
   saveTasks(tasks);
@@ -86,11 +86,11 @@ function deleteTask(id, dateKey) {
 
 /** Effective status of a task on a given date. */
 function statusOnDay(task, dateKey) {
-  if (!dateKey) dateKey = todayDateKey();
+  if (!dateKey) { dateKey = todayDateKey(); }
   const sd = task.statusDays || {};
-  if (sd[dateKey]) return sd[dateKey];
-  if ((task.checkedDays||{})[dateKey]) return 'done';
-  return 'active';
+  if (sd[dateKey]) { return sd[dateKey]; }
+  if ((task.checkedDays||{})[dateKey]) { return STATUS_DONE; }
+  return STATUS_ACTIVE;
 }
 
 /** Checked state for a specific date. */
@@ -100,20 +100,20 @@ function isCheckedOnDay(task, dateKey) {
 
 /**
  * Filter tasks for the given status-tab and day.
- * dayFilter === -1 means "all days" (no day filtering).
+ * dayFilter === DAY_FILTER_ALL means "all days" (no day filtering).
  * Uses explicit null check so Sunday (0) is never skipped due to being falsy.
  */
 function getFilteredTasks(statusFilter, dayFilter, dateKey) {
   const dk = dateKey || todayDateKey();
   return tasks.filter(t => {
     const dayStatus = statusOnDay(t, dk);
-    if (dayStatus === 'deleted') return false;
-    if (statusFilter === 'active'  && dayStatus !== 'active')  return false;
-    if (statusFilter === 'done'    && dayStatus !== 'done')    return false;
-    if (statusFilter === 'ignored' && dayStatus !== 'ignored') return false;
-    if (dayFilter !== -1 && dayFilter != null) {
-      const taskDays = t.days ?? [0,1,2,3,4,5,6];
-      if (!taskDays.includes(dayFilter)) return false;
+    if (dayStatus === STATUS_DELETED)  { return false; }
+    if (statusFilter === STATUS_ACTIVE  && dayStatus !== STATUS_ACTIVE)  { return false; }
+    if (statusFilter === STATUS_DONE    && dayStatus !== STATUS_DONE)    { return false; }
+    if (statusFilter === STATUS_IGNORED && dayStatus !== STATUS_IGNORED) { return false; }
+    if (dayFilter !== DAY_FILTER_ALL && dayFilter != null) {
+      const taskDays = t.days ?? [...ALL_DAYS];
+      if (!taskDays.includes(dayFilter)) { return false; }
     }
     return true;
   });

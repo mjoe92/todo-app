@@ -7,10 +7,6 @@
  *                 absence of a key means "active" for that day
  *   status      : kept for legacy badge reads, synced to today on load
  */
-const STORAGE_KEYS = {
-  TASKS: 'todo_tasks',
-  THEME: 'todo_theme',
-};
 
 function todayDateKey() {
   const d = new Date();
@@ -39,22 +35,22 @@ function isPastDateKey(dateKey) { return dateKey < todayDateKey(); }
 function isFutureDateKey(dateKey) { return dateKey > todayDateKey(); }
 
 function saveTasks(tasks) {
-  try { localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks)); } catch(e){}
+  try { localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks)); } catch(e){}
 }
 
 function loadTasks() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.TASKS);
+    const raw = localStorage.getItem(STORAGE_KEY_TASKS);
     return raw ? JSON.parse(raw) : [];
   } catch(e) { return []; }
 }
 
 function saveTheme(theme) {
-  try { localStorage.setItem(STORAGE_KEYS.THEME, theme); } catch(e){}
+  try { localStorage.setItem(STORAGE_KEY_THEME, theme); } catch(e){}
 }
 
 function loadTheme() {
-  try { return localStorage.getItem(STORAGE_KEYS.THEME); } catch(e){ return null; }
+  try { return localStorage.getItem(STORAGE_KEY_THEME); } catch(e){ return null; }
 }
 
 /** Migrate old tasks and sync today's derived fields on every load. */
@@ -62,11 +58,11 @@ function applyDailyReset(tasks) {
   const todayKey = todayDateKey();
   tasks = tasks.map(t => {
     const checkedDays = t.checkedDays || (t.checked ? { [todayKey]: true } : {});
-    const statusDays  = t.statusDays  || (t.status && t.status !== 'active' ? { [todayKey]: t.status } : {});
-    const todayStatus  = statusDays[todayKey] || 'active';
+    const statusDays  = t.statusDays  || (t.status && t.status !== STATUS_ACTIVE ? { [todayKey]: t.status } : {});
+    const todayStatus  = statusDays[todayKey] || STATUS_ACTIVE;
     const todayChecked = !!checkedDays[todayKey];
     return { ...t, checkedDays, statusDays, checked: todayChecked,
-      status: todayChecked ? 'done' : todayStatus };
+      status: todayChecked ? STATUS_DONE : todayStatus };
   });
   saveTasks(tasks);
   return tasks;

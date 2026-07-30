@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Teal filled circle — mirrors .task-checkbox.checked background -->
+  <circle cx="16" cy="16" r="15" fill="#01696f"/>
+  <!-- White checkmark — same polyline as the checkbox SVG -->
+  <polyline
+    points="7,16.5 13,22.5 25,10"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

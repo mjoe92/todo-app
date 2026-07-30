@@ -166,7 +166,6 @@ body {
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
-    margin-left: auto;
     transition: background 0.18s, box-shadow 0.18s;
 }
 
@@ -242,9 +241,7 @@ body {
 
 /* ── Main ── */
 .app-main {
-    max-width: 1000px;
     width: 100%;
-    margin: 0 auto;
     padding: 1rem 1rem calc(var(--bottom-bar-h) + 1rem);
     flex: 1;
 }

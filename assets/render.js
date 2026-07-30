@@ -1,10 +1,13 @@
 /** DOM rendering: task list, empty states, filter tabs, reset note */
-let currentFilter = 'active';
+let currentFilter = STATUS_ACTIVE;
 let currentDayFilter = new Date().getDay(); // always start on today's weekday (0=Sun … 6=Sat)
 let dayFilterMode = currentDayFilter;
 
+const DAY_ORDER = Object.freeze([1, 2, 3, 4, 5, 6, 0]);
+const DAY_KEYS  = Object.freeze(['dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat', 'daySun']);
+
 function viewedDateKey() {
-  if (dayFilterMode === 'all') return todayDateKey();
+  if (dayFilterMode === 'all') { return todayDateKey(); }
   return dateKeyForWeekday(currentDayFilter);
 }
 
@@ -20,63 +23,64 @@ function escapeHtml(s) {
 }
 
 function formatDate(ts) {
-  return new Date(ts).toLocaleDateString(currentLang||'en', {month:'short', day:'numeric'});
+  return new Date(ts).toLocaleDateString(currentLang || DEFAULT_LANG, {month:'short', day:'numeric'});
 }
 
 function setFilter(filter, btn) {
   currentFilter = filter;
   document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.classList.remove('active');
-    tab.setAttribute('aria-selected','false');
+    tab.classList.remove(CSS_ACTIVE);
+    tab.setAttribute(ATTR_ARIA_SELECTED, 'false');
   });
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected','true');
+  btn.classList.add(CSS_ACTIVE);
+  btn.setAttribute(ATTR_ARIA_SELECTED, 'true');
   renderTasks();
 }
 
 function setDayFilter(mode, btn) {
   dayFilterMode = mode;
-  if (mode === 'all') currentDayFilter = -1;
-  else                currentDayFilter = mode;
+  if (mode === 'all') { currentDayFilter = DAY_FILTER_ALL; }
+  else                { currentDayFilter = mode; }
   document.querySelectorAll('.day-filter-tab').forEach(tab => {
-    tab.classList.remove('active');
-    tab.setAttribute('aria-selected','false');
+    tab.classList.remove(CSS_ACTIVE);
+    tab.setAttribute(ATTR_ARIA_SELECTED, 'false');
   });
-  if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+  if (btn) {
+    btn.classList.add(CSS_ACTIVE);
+    btn.setAttribute(ATTR_ARIA_SELECTED, 'true');
+  }
   renderTasks();
 }
 
 function renderDayFilterBar() {
   const bar = document.getElementById('day-filter-bar');
-  if (!bar) return;
-  const order   = [1,2,3,4,5,6,0];
-  const dayKeys = ['dayMon','dayTue','dayWed','dayThu','dayFri','daySat','daySun'];
+  if (!bar) { return; }
 
   const allActive = dayFilterMode === 'all';
 
-  const dayButtons = order.map((dayIdx, i) => {
+  const dayButtons = DAY_ORDER.map((dayIdx, i) => {
     const active  = dayFilterMode === dayIdx;
     const dateKey = dateKeyForWeekday(dayIdx);
     const past    = isPastDateKey(dateKey);
-    return `<button class="filter-tab day-filter-tab ${active?'active':''} ${past?'day-past':''}" role="tab" aria-selected="${active}" onclick="setDayFilter(${dayIdx},this)" title="${past ? t('readOnly') : ''}">${t(dayKeys[i])}</button>`;
+    return `<button class="filter-tab day-filter-tab ${active ? CSS_ACTIVE : ''} ${past ? 'day-past' : ''}" role="tab" aria-selected="${active}" onclick="setDayFilter(${dayIdx},this)" title="${past ? t('readOnly') : ''}">${t(DAY_KEYS[i])}</button>`;
   }).join('');
-  const allButton = `<button class="filter-tab day-filter-tab ${allActive?'active':''}" role="tab" aria-selected="${allActive}" onclick="setDayFilter('all',this)">${t('dayAll')}</button>`;
+  const allButton = `<button class="filter-tab day-filter-tab ${allActive ? CSS_ACTIVE : ''}" role="tab" aria-selected="${allActive}" onclick="setDayFilter('all',this)">${t('dayAll')}</button>`;
   bar.innerHTML = dayButtons + allButton;
 }
 
 function renderResetNote() {
   const note = document.getElementById('reset-note');
-  if (!note) return;
+  if (!note) { return; }
   const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate()+1);
-  tomorrow.setHours(0,0,0,0);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
   const diffH = Math.ceil((tomorrow - Date.now()) / 36e5);
   note.textContent = t('resetNote', diffH);
 }
 
 function renderEmptyState(list) {
-  const labelKey = {all:'emptyAllLabel',active:'emptyActiveLabel',done:'emptyDoneLabel',ignored:'emptyIgnoredLabel'}[currentFilter];
-  const descKey  = {all:'emptyAllDesc', active:'emptyActiveDesc', done:'emptyDoneDesc', ignored:'emptyIgnoredDesc'}[currentFilter];
+  const labelKey = {all:'emptyAllLabel', active:'emptyActiveLabel', done:'emptyDoneLabel', ignored:'emptyIgnoredLabel'}[currentFilter];
+  const descKey  = {all:'emptyAllDesc',  active:'emptyActiveDesc',  done:'emptyDoneDesc',  ignored:'emptyIgnoredDesc'}[currentFilter];
   list.innerHTML = `
     <div class="empty-state">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -89,16 +93,16 @@ function renderEmptyState(list) {
 }
 
 function statusBorderVar(dayStatus) {
-  if (dayStatus === 'done')    return 'var(--color-success)';
-  if (dayStatus === 'ignored') return 'var(--color-warning)';
+  if (dayStatus === STATUS_DONE)    { return 'var(--color-success)'; }
+  if (dayStatus === STATUS_IGNORED) { return 'var(--color-warning)'; }
   return 'var(--color-border)';
 }
 
 function toggleDetail(id) {
-  const el  = document.getElementById('task-detail-'+id);
-  const btn = document.getElementById('task-toggle-'+id);
-  if (!el||!btn) return;
-  const open = el.classList.toggle('open');
+  const el  = document.getElementById('task-detail-' + id);
+  const btn = document.getElementById('task-toggle-' + id);
+  if (!el || !btn) { return; }
+  const open = el.classList.toggle(CSS_OPEN);
   btn.setAttribute('aria-expanded', open);
   btn.classList.toggle('expanded', open);
 }
@@ -109,24 +113,22 @@ function buildTaskCardHTML(task, isPast, isToday, dateKey) {
 
   const canAct = dayFilterMode !== 'all' && !isPast;
 
-  const badgeClass = dayStatus === 'done' ? 'badge-done' : dayStatus === 'ignored' ? 'badge-ignored' : 'badge-active';
-  const badgeText  = dayStatus === 'done' ? t('badgeDone') : dayStatus === 'ignored' ? t('badgeIgnored') : t('badgeActive');
+  const badgeClass = dayStatus === STATUS_DONE ? 'badge-done' : dayStatus === STATUS_IGNORED ? 'badge-ignored' : 'badge-active';
+  const badgeText  = dayStatus === STATUS_DONE ? t('badgeDone') : dayStatus === STATUS_IGNORED ? t('badgeIgnored') : t('badgeActive');
   // Badge only on specific day tabs
   const badge = dayFilterMode !== 'all'
     ? `<span class="task-badge ${badgeClass}">${badgeText}</span>`
     : '';
 
-  const ignoreLabel = dayStatus === 'ignored' ? t('unignoreTask') : t('ignoreTask');
-  const ignoreTitle = dayStatus === 'ignored' ? t('unignore')     : t('ignore');
+  const ignoreLabel = dayStatus === STATUS_IGNORED ? t('unignoreTask') : t('ignoreTask');
+  const ignoreTitle = dayStatus === STATUS_IGNORED ? t('unignore')     : t('ignore');
 
-  const order    = [1,2,3,4,5,6,0];
-  const dayKeys  = ['dayMon','dayTue','dayWed','dayThu','dayFri','daySat','daySun'];
-  const taskDays = task.days ?? [0,1,2,3,4,5,6];
-  const allDays  = taskDays.length === 7;
+  const taskDays = task.days ?? [...ALL_DAYS];
+  const allDays  = taskDays.length === ALL_DAYS.length;
 
   const dayDots = allDays ? '' : `
         <div class="task-day-dots" aria-label="${t('taskDays')}">
-          ${order.map((d,i) => `<span class="day-dot ${taskDays.includes(d)?'on':'off'}" title="${t(dayKeys[i])}">${t(dayKeys[i])}</span>`).join('')}
+          ${DAY_ORDER.map((d, i) => `<span class="day-dot ${taskDays.includes(d) ? 'on' : 'off'}" title="${t(DAY_KEYS[i])}">${t(DAY_KEYS[i])}</span>`).join('')}
         </div>`;
 
   const hasDetail = task.detail && task.detail.trim().length > 0;
@@ -154,7 +156,7 @@ function buildTaskCardHTML(task, isPast, isToday, dateKey) {
         </div>`;
 
   // Checkbox: only on today's specific-day tab, and only if task is not ignored
-  const checkboxHTML = isToday && dayFilterMode !== 'all' && dayStatus !== 'ignored' ? `
+  const checkboxHTML = isToday && dayFilterMode !== 'all' && dayStatus !== STATUS_IGNORED ? `
         <div class="task-checkbox ${checkedForDay ? 'checked' : ''}"
              role="checkbox" aria-checked="${checkedForDay}"
              aria-label="${t('markDone')}" tabindex="0"
@@ -222,7 +224,7 @@ function renderTasks() {
 
   if ('ontouchstart' in window) {
     const hint = document.getElementById('swipe-hint');
-    if (hint) hint.style.display = '';
+    if (hint) { hint.style.display = ''; }
   }
 
   renderDayFilterBar();
@@ -240,9 +242,9 @@ function renderTasks() {
     const checkedForDay = isCheckedOnDay(task, dateKey);
     card.className = [
       'task-card',
-      checkedForDay           ? 'done'    : '',
-      dayStatus === 'ignored' ? 'ignored' : '',
-      past                    ? 'past-day': ''
+      checkedForDay                  ? STATUS_DONE    : '',
+      dayStatus === STATUS_IGNORED   ? STATUS_IGNORED : '',
+      past                           ? 'past-day'     : ''
     ].join(' ').trim();
     card.setAttribute('data-task-id', task.id);
     card.setAttribute('role', 'listitem');
@@ -256,7 +258,7 @@ function renderTasks() {
         (id) => { ignoreTask(id, dateKey); renderTasks(); },
       );
     }
-    if (typeof setupSort === 'function') setupSort(card, task.id);
+    if (typeof setupSort === 'function') { setupSort(card, task.id); }
   });
   renderResetNote();
 }

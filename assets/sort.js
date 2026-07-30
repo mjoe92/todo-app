@@ -23,7 +23,7 @@
     setTimeout(() => {
       const card = cardEl(id);
       if (card) {
-        card.classList.add('dragging');
+        card.classList.add(CSS_DRAGGING);
       }
     }, 0);
   }
@@ -32,9 +32,9 @@
     dragSrcId = null;
     const card = cardEl(id);
     if (card) {
-      card.classList.remove('dragging');
+      card.classList.remove(CSS_DRAGGING);
     }
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove(CSS_DRAG_OVER));
   }
 
   function onDragOver(e, id) {
@@ -43,16 +43,16 @@
     }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove(CSS_DRAG_OVER));
     const card = cardEl(id);
     if (card) {
-      card.classList.add('drag-over');
+      card.classList.add(CSS_DRAG_OVER);
     }
   }
 
   function onDrop(e, targetId) {
     e.preventDefault();
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove(CSS_DRAG_OVER));
     if (dragSrcId === null || dragSrcId === targetId) {
       return;
     }
@@ -89,7 +89,7 @@
       'border-radius:var(--radius-lg)'
     ].join(';');
     document.body.appendChild(touchClone);
-    card.classList.add('dragging');
+    card.classList.add(CSS_DRAGGING);
     e.preventDefault();
   }
 
@@ -106,11 +106,11 @@
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     touchClone.style.display = '';
 
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove(CSS_DRAG_OVER));
     const targetCard = el && el.closest('.task-card');
     const targetId = targetCard ? Number(targetCard.dataset.taskId) : null;
     if (targetId && targetId !== touchDragId) {
-      targetCard.classList.add('drag-over');
+      targetCard.classList.add(CSS_DRAG_OVER);
     }
   }
 
@@ -126,7 +126,7 @@
     }
     const srcCard = cardEl(touchDragId);
     if (srcCard) {
-      srcCard.classList.remove('dragging');
+      srcCard.classList.remove(CSS_DRAGGING);
     }
 
     // Find drop target
@@ -134,7 +134,7 @@
     const targetCard = el && el.closest('.task-card');
     const targetId = targetCard ? Number(targetCard.dataset.taskId) : null;
 
-    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove(CSS_DRAG_OVER));
 
     if (targetId && targetId !== touchDragId) {
       reorderTasks(touchDragId, targetId);

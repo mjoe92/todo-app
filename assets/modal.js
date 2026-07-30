@@ -1,22 +1,20 @@
 /** Create / Edit task modal */
 let editingId = null;
-let selectedDays = [0, 1, 2, 3, 4, 5, 6];
+let selectedDays = [...ALL_DAYS];
 
 function renderDayPicker(activeDays) {
-  selectedDays = activeDays ? [...activeDays] : [0, 1, 2, 3, 4, 5, 6];
+  selectedDays = activeDays ? [...activeDays] : [...ALL_DAYS];
   const picker = document.getElementById('day-picker');
   if (!picker) {
     return;
   }
-  const order = [1, 2, 3, 4, 5, 6, 0];
-  const keys = ['dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat', 'daySun'];
-  picker.innerHTML = order.map((dayIdx, i) =>
+  picker.innerHTML = DAY_ORDER.map((dayIdx, i) =>
     `<button type="button"
-                 class="day-btn ${selectedDays.includes(dayIdx) ? 'active' : ''}"
+                 class="day-btn ${selectedDays.includes(dayIdx) ? CSS_ACTIVE : ''}"
                  data-day="${dayIdx}"
                  onclick="toggleDayBtn(this,${dayIdx})"
                  aria-pressed="${selectedDays.includes(dayIdx)}"
-                 aria-label="${t(keys[i])}">${t(keys[i])}</button>`
+                 aria-label="${t(DAY_KEYS[i])}">${t(DAY_KEYS[i])}</button>`
   ).join('');
 }
 
@@ -26,12 +24,12 @@ function toggleDayBtn(btn, dayIdx) {
       return;
     }
     selectedDays = selectedDays.filter(d => d !== dayIdx);
-    btn.classList.remove('active');
-    btn.setAttribute('aria-pressed', 'false');
+    btn.classList.remove(CSS_ACTIVE);
+    btn.setAttribute(ATTR_ARIA_PRESSED, 'false');
   } else {
     selectedDays.push(dayIdx);
-    btn.classList.add('active');
-    btn.setAttribute('aria-pressed', 'true');
+    btn.classList.add(CSS_ACTIVE);
+    btn.setAttribute(ATTR_ARIA_PRESSED, 'true');
   }
 }
 
@@ -60,7 +58,7 @@ function openModal(id = null) {
     }
     title.textContent = t('modalTitleEdit');
     submit.textContent = t('modalSave');
-    renderDayPicker(task ? (task.days ?? [0, 1, 2, 3, 4, 5, 6]) : [0, 1, 2, 3, 4, 5, 6]);
+    renderDayPicker(task ? (task.days ?? [...ALL_DAYS]) : [...ALL_DAYS]);
   } else {
     input.value = '';
     if (detailInput) {
@@ -68,14 +66,14 @@ function openModal(id = null) {
     }
     title.textContent = t('modalTitleNew');
     submit.textContent = t('modalAdd');
-    renderDayPicker([0, 1, 2, 3, 4, 5, 6]);
+    renderDayPicker([...ALL_DAYS]);
   }
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal').classList.add(CSS_OPEN);
   setTimeout(() => input.focus(), 80);
 }
 
 function closeModal() {
-  document.getElementById('modal').classList.remove('open');
+  document.getElementById('modal').classList.remove(CSS_OPEN);
   editingId = null;
 }
 
